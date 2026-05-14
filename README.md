@@ -30,7 +30,7 @@
 ```
 Должно вывестись *Channel 'blockchain2025' joined*. И появиться файл `connection-org1.json` в папке `organizations/peerOrganizations/org1.example.com/`
 
-## 2. Пишу смарт-контракт 
+## 2. Cмарт-контракт 
 
 ### I. Настройка и установка зависимостей:
 ```shell
@@ -122,6 +122,25 @@ export const contracts: any[] = [ClickerContract];
 `C:\Users\Admin\Desktop\github\HYPERLEDGER-FABRIC_clicker\fabric-samples\chaincode\node_modules\fabric-shim-api\types\index.d.ts`
 
 В файле `contract.ts` на примере функции **click** показано как правильно писать самостоятельно работать над контарктом
+
+Далее создадим в `fabric-samples` папку **utils**, где находятся скопированные файлы из папки
+`fabric-samples/test-application/javascript`, и файл **app.js**. Тут описываем все самостоятельно написанные функции таким образом:
+```javascript
+app.post('/click', async (req, res) => {
+    try {
+        const result = await contract.submitTransaction('click'); (2)
+        res.send(result.toString());
+    } catch (e) {
+        res.status(500).send(e)
+    }
+})
+```
+
+В строке (2) пишем **submitTransaction**, если данные изменяют блокчейн и **evaluateTransaction**, если не изменяют
+
+> ! Все остальное написанное в этом файле у меня в репозитории заучить
+
+*см. в app.js*
 
 ## ЗАПУСК
 

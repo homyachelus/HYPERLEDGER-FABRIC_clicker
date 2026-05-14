@@ -68,7 +68,7 @@ import {Contract, Context} from "fabric-contract-api";
 export class ClickerContract extends Contract {
     public async init(ctx: Context) {
         const clicked = {click: 0};
-        await ctx.stub.putState('CLICK-', Buffer.from(JSON.stringify(clicked))) (6)
+        await ctx.stub.putState('CLICK-', Buffer.from(JSON.stringify(clicked)))
     }
 }
 ```
@@ -126,5 +126,21 @@ export const contracts: any[] = [ClickerContract];
 ./network.sh down
 ./network.sh up -ca
 ./network.sh up createChannel -ca -c blockchain2025
-./network.sh deployCC -ccn blockchain -ccl typescript -ccv 1.0 -ccs 1 -ccp ../chaincode -cci init
+./network.sh deployCC -ccn blockchain -ccl typescript -ccv 1.0 -ccs 1 -ccp ../chaincode -cci init (1)
+```
+
+Если при написании (1) строки ошибка:
+```shell
+<font color="red">
+Chaincode definition approved on peer0.org1 on channel 'mychannel' failed
+Deploying chaincode failed
+</font>
+```
+
+Зайти в папку `chaincode` и пишем:
+```shell
+npm install
+npm run build 
+cd ../test-network
+./network.sh deployCC -ccn blockchain -ccl typescript -ccv 1.0 -ccs 1 -ccp ../chaincode -cci init -c blockchain
 ```

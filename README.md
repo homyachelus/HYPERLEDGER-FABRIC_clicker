@@ -95,12 +95,10 @@ public async queryAll<T = string>(ctx:Context, prefix:string): Promise<T[]> {
 
 // и использовать его как:
 public async getClicked(ctx:Context): Promise<Clicker> {
-    return (await this.queryAll<Clicker>(ctx,'CLICKED-'))[0];
+    return (await this.queryAll<Clicker>(ctx,'CLICK-'))[0];
 }
 ```
 > ! Заучить код для получения данных из блокчейна ^
-
-### III. Вход в контракт
 
 В файле `index.ts` импортируем и экпортируем написанный контракт для схода в него 
 
@@ -117,6 +115,13 @@ export const contracts: any[] = [ClickerContract];
 "start": "fabric-chaincode-node start",
 "build": "tsc"
 ```
+
+Командой `./network.sh deployCC -ccn blockchain -ccl typescript -ccv 1.0 -ccs 1 -ccp ../chaincode -cci init` разворачиваем контракт
+
+Любой контракт на typescript использует методы объекта ctx.stub. По этому пути находятся основные: 
+`C:\Users\Admin\Desktop\github\HYPERLEDGER-FABRIC_clicker\fabric-samples\chaincode\node_modules\fabric-shim-api\types\index.d.ts`
+
+В файле `contract.ts` на примере функции **click** показано как правильно писать самостоятельно работать над контарктом
 
 ## ЗАПУСК
 

@@ -247,3 +247,5 @@ cd ../../frontend
 npm i
 npm run dev
 ```
+
+![img.png](img.png)

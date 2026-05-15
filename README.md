@@ -100,6 +100,8 @@ public async getClicked(ctx:Context): Promise<Clicker> {
 ```
 > ! Заучить код для получения данных из блокчейна ^
 
+### III. Натсройка остальных файлов
+
 В файле `index.ts` импортируем и экпортируем написанный контракт для схода в него 
 
 Все что нужно сделать:
@@ -110,7 +112,7 @@ export {ClickerContract} from "./contract";
 export const contracts: any[] = [ClickerContract];
 ```
 
-Для парвильного запуска добавляем такие параметры в **scripts** в `package.json`:
+Для правильного запуска добавляем такие параметры в **scripts** в `package.json`:
 ```json
 "start": "fabric-chaincode-node start",
 "build": "tsc"
@@ -142,6 +144,68 @@ app.post('/click', async (req, res) => {
 
 *см. в app.js*
 
+## 3. Фронтенд
+
+### I. Установка зависимостей
+
+Пишем на реатке, он разрешен и тут легче:
+```shell
+npm create vite@latest frontend -- --template react-ts
+cd frontend
+npm install
+npm run dev
+```
+
+### II. Написание фронта
+В папке **src** созадем папку **api**, а в ней файл **api.ts**, где таким образом описываем функции с контаркта для фронта:
+```typescript
+export const click = async () => {
+    const raw = await fetch("http://localhost:3002/click", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({})
+    })
+    return await raw.json();
+}
+```
+> ! Бэкенд запускается на порту 3002
+
+В **App.tsx** оформляем самый обычный веб. Использовать функции таким образом:
+```typescript
+ const clicked = async () => {
+    setLoading(true);
+
+    try {
+        await click();
+        await getClicked();
+    }
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        setLoading(false);
+    }
+}
+```
+
+в терминале переходим в **app-js** и пишем:
+```shell
+npm i
+npm run start
+```
+
+Должно вывестись
+
+*Listening on port 3002
+Successfully enrolled admin user and imported it into the wallet*
+
+В другом терминале:
+```shell
+cd frontend
+npm i
+npm run dev
+```
+
 ## ЗАПУСК
 
 * https://hyperledger-fabric.readthedocs.io/ru/latest/write_first_app.html
@@ -155,11 +219,12 @@ app.post('/click', async (req, res) => {
 
 Если при написании (1) строки ошибка:
 ```shell
-<font color="red">
 Chaincode definition approved on peer0.org1 on channel 'mychannel' failed
 Deploying chaincode failed
-</font>
 ```
+
+Поменять текущую версию на **1.3** или **1.3.0** в файле:
+`fabric-samples/asset-transfer-basic/chaincode-go/go.mod`
 
 Зайти в папку `chaincode` и пишем:
 ```shell
@@ -167,4 +232,18 @@ npm install
 npm run build 
 cd ../test-network
 ./network.sh deployCC -ccn blockchain -ccl typescript -ccv 1.0 -ccs 1 -ccp ../chaincode -cci init -c blockchain
+```
+
+Далее:
+```shell
+cd ../app-js
+npm i
+npm run start
+```
+
+В другом терминале:
+```shell
+cd ../../frontend
+npm i
+npm run dev
 ```
